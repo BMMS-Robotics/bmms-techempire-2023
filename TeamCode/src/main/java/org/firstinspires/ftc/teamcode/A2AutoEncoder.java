@@ -30,7 +30,6 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -61,9 +60,9 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list
  */
 
-@Autonomous(name="Robot: A2AutonomousDriveEncoder", group="Robot")
+@Autonomous(name="Robot: A2AutoEncoder", group="Robot")
 //@Disabled
-public class A2AutonomousDriveEncoder extends LinearOpMode {
+public class A2AutoEncoder extends LinearOpMode {
 
     /* Declare OpMode members. */
     RobotTechEmpireHardware robot       = new RobotTechEmpireHardware(this);
@@ -117,8 +116,8 @@ public class A2AutonomousDriveEncoder extends LinearOpMode {
         // Step through each leg of the path,
         // Note: Reverse movement is obtained by setting a negative distance (not speed)
         encoderDrive(DRIVE_SPEED,  -35,  -35, 2.0);  // S1: Forward 47 Inches with 5 Sec timeout
-        encoderDrive(TURN_SPEED,   12.75, -12.75, 4.0);  // SPINNING WRONG DIRECTIONS2: Turn Right 12 Inches with 4 Sec timeout
-        encoderDrive(DRIVE_SPEED, -84, -84, 4.0);  // MOVE FOR LONGER [=S3: Reverse 24 Inches with 4 Sec timeout
+        encoderDrive(TURN_SPEED,   -12.75, 12.75, 4.0);  // S2: Turn Right 12 Inches with 4 Sec timeout
+        encoderDrive(DRIVE_SPEED, -84, -84, 4.0);  //  S3: Reverse 24 Inches with 4 Sec timeout
 
         telemetry.addData("Path", "Complete");
         telemetry.update();

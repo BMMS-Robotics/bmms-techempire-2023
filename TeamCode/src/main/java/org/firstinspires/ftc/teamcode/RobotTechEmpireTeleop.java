@@ -77,7 +77,7 @@ public class RobotTechEmpireTeleop extends LinearOpMode {
     public void runOpMode() {
         double drive        = 0;
         double turn         = 0;
-        double arm          = 0;
+        double armspeed          = 0;
         double handOffset   = 0;
 
         // initialize all the hardware, using the hardware class. See how clean and simple this is?
@@ -99,29 +99,29 @@ public class RobotTechEmpireTeleop extends LinearOpMode {
             // Combine drive and turn for blended motion. Use RobotHardware class
             robot.driveRobot(drive, turn);
 
-            // Use gamepad left & right Bumpers to open and close the claw
+                // Use gamepad left & right Bumpers to open and close the claw
             // Use the SERVO constants defined in RobotHardware class.
             // Each time around the loop, the servos will move by a small amount.
             // Limit the total offset to half of the full travel range
-            if (gamepad1.right_bumper)
+            if (gamepad2.right_bumper)
                 handOffset += robot.HAND_SPEED;
-            else if (gamepad1.left_bumper)
+            else if (gamepad2.left_bumper)
                 handOffset -= robot.HAND_SPEED;
-            handOffset = Range.clip(handOffset, -0.5, 0.5);
+            handOffset = Range.clip(handOffset, 0.5, -0.5);
 
             // Move both servos to new position.  Use RobotHardware class
-            robot.setHandPositions(handOffset);
+            //robot.setHandPositions(handOffset);
 
             // Use gamepad buttons to move arm up (Y) and down (A)
             // Use the MOTOR constants defined in RobotHardware class.
-            if (gamepad1.y)
-                arm = robot.ARM_UP_POWER;
-            else if (gamepad1.a)
-                arm = robot.ARM_DOWN_POWER;
+            if (gamepad2.y)
+                armspeed = 0.05;//robot.ARM_UP_POWER;
+            else if (gamepad2.a)
+                armspeed = -0.05;//robot.ARM_DOWN_POWER;
             else
-                arm = 0;
+                armspeed = 0;
 
-            robot.setArmPower(arm);
+            robot.setArmPower(armspeed);
 
             // Send telemetry messages to explain controls and show robot status
             telemetry.addData("Drive", "Left Stick");
@@ -132,7 +132,7 @@ public class RobotTechEmpireTeleop extends LinearOpMode {
 
             telemetry.addData("Drive Power", "%.2f", drive);
             telemetry.addData("Turn Power",  "%.2f", turn);
-            telemetry.addData("Arm Power",  "%.2f", arm);
+            telemetry.addData("Arm Power",  "%.2f", armspeed);
             telemetry.addData("Hand Position",  "Offset = %.2f", handOffset);
             telemetry.update();
 

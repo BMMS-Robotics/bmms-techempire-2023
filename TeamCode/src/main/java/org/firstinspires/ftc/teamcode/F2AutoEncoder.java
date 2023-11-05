@@ -29,9 +29,12 @@
 
 package org.firstinspires.ftc.teamcode;
 
+import android.util.Log;
+
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 /*
@@ -68,6 +71,7 @@ public class F2AutoEncoder extends LinearOpMode {
     RobotTechEmpireHardware robot       = new RobotTechEmpireHardware(this);
     //private DcMotor         robot.leftDrive   = null;
     //private DcMotor         robot.rightDrive  = null;
+    String TAG = "RobotTechEmpireHardware";
 
     private ElapsedTime     runtime = new ElapsedTime();
 
@@ -83,6 +87,9 @@ public class F2AutoEncoder extends LinearOpMode {
     static final double     WHEEL_DIAMETER_INCHES   = 4.0 ;     // For figuring circumference
     static final double     COUNTS_PER_INCH         = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
                                                       (WHEEL_DIAMETER_INCHES * 3.1415);
+    static final double COUNTS_PER_DEGREE = 1440 / 360;
+    static final double ARM_SPEED = 0.05;
+
     static final double     DRIVE_SPEED             = 0.6;
     static final double     TURN_SPEED              = 0.5;
 
@@ -92,12 +99,14 @@ public class F2AutoEncoder extends LinearOpMode {
         // Initialize the drive system variables.
         robot.leftDrive  = hardwareMap.get(DcMotor.class, "leftDrive");
         robot.rightDrive = hardwareMap.get(DcMotor.class, "rightDrive");
-
+        robot.armMotor = hardwareMap.get(DcMotor.class,"armMotor");
         // To drive forward, most robots need the motor on one side to be reversed, because the axles point in opposite directions.
         // When run, this OpMode should start both motors driving forward. So adjust these two lines based on your first test drive.
         // Note: The settings here assume direct drive on left and right wheels.  Gear Reduction or 90 Deg drives may require direction flips
         robot.leftDrive.setDirection(DcMotor.Direction.REVERSE);
         robot.rightDrive.setDirection(DcMotor.Direction.FORWARD);
+        robot.armMotor.setDirection(DcMotorSimple.Direction.FORWARD);
+
 
         robot.leftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robot.rightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -117,6 +126,7 @@ public class F2AutoEncoder extends LinearOpMode {
         // Step through each leg of the path,
         // Note: Reverse movement is obtained by setting a negative distance (not speed)
         encoderDrive(DRIVE_SPEED,  -35,  -35, 2.0);  // S1: Forward 47 Inches with 5 Sec timeout
+        armDrive(DRIVE_SPEED,10,5.0);
         encoderDrive(TURN_SPEED,   -12.75, 12.75, 4.0);  // S2: Turn Right 12 Inches with 4 Sec timeout
         encoderDrive(DRIVE_SPEED, -84, -84, 4.0);  //  S3: Reverse 24 Inches with 4 Sec timeout
 
@@ -182,6 +192,47 @@ public class F2AutoEncoder extends LinearOpMode {
             robot.leftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             robot.rightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
+            sleep(250);   // optional pause after each move.
+        }
+    }
+    public void armDrive(double armSpeed,
+                         double armAngle,
+                         double armTimeouts) {
+        int newArmTarget;
+        if (opModeIsActive()) {
+            Log.v(TAG,"arm angle ="+armAngle);
+            Log.v(TAG," armSpeed ="+armSpeed);
+            Log.v(TAG," armTimeouts ="+armTimeouts);
+
+
+            // Determine new target position, and pass to motor controller
+            newArmTarget = robot.armMotor.getCurrentPosition() + (int) (armAngle * COUNTS_PER_DEGREE);
+            robot.armMotor.setTargetPosition(newArmTarget);
+
+            // Turn On RUN_TO_POSITION
+            robot.armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            runtime.reset();
+
+            // reset the timeout time and start motion.
+            robot.armMotor.setPower(Math.abs(armSpeed));
+
+            //keep looping while run time still active and motors are still moving.
+            //isBusy command = safeguard that means the robot will stop when motor hits target position.
+            while (opModeIsActive() &&
+                    (runtime.seconds() < armTimeouts) &&
+                    (robot.armMotor.isBusy())) {
+
+                // Display it for the driver.
+                telemetry.addData("Running to", " %7d :%7d", newArmTarget);
+                telemetry.addData("Currently at", " at %7d :%7d",
+                        robot.armMotor.getCurrentPosition());
+                telemetry.update();
+            }
+            // Stop all motion;
+            robot.armMotor.setPower(0);
+
+            // Turn off RUN_TO_POSITION
+            robot.armMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             sleep(250);   // optional pause after each move.
         }
     }

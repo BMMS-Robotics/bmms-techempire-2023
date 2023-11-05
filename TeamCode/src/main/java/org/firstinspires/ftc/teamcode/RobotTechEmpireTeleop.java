@@ -29,6 +29,10 @@
 
 package org.firstinspires.ftc.teamcode;
 
+import static org.firstinspires.ftc.teamcode.RobotTechEmpireHardware.HAND_SERVO;
+
+import android.util.Log;
+
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -54,7 +58,7 @@ import com.qualcomm.robotcore.util.Range;
  * must also be copied to the same location (maintaining its name).
  *
  * For comparison purposes, this sample and its accompanying hardware class duplicates the functionality of the
- * RobotTelopPOV_Linear OpMode.  It assumes three motors (left_drive, right_drive and arm) and two servos (left_hand and right_hand)
+ * RobotTelopPOV_Linear OpMode.  It assumes three motors (left_drive, right_drive and arm) and one servo (hand)
  *
  * View the RobotHardware.java class file for more details
  *
@@ -72,13 +76,14 @@ public class RobotTechEmpireTeleop extends LinearOpMode {
     // Create a RobotHardware object to be used to access robot hardware.
     // Prefix any hardware functions with "robot." to access this class.
     RobotTechEmpireHardware robot       = new RobotTechEmpireHardware(this);
+    private String Tag = "RobotTechEmpireHardware";
 
     @Override
     public void runOpMode() {
         double drive        = 0;
         double turn         = 0;
         double arm          = 0;
-       // double handOffset   = 0;
+        double handOffset   = 0;
 
         // initialize all the hardware, using the hardware class. See how clean and simple this is?
         robot.init();
@@ -103,14 +108,24 @@ public class RobotTechEmpireTeleop extends LinearOpMode {
             // Use the SERVO constants defined in RobotHardware class.
             // Each time around the loop, the servos will move by a small amount.
             // Limit the total offset to half of the full travel range
-          //  if (gamepad2.right_bumper)
-                //   handOffset += robot.HAND_SPEED;
-        //    else if (gamepad2.left_bumper)
-          //      handOffset -= robot.HAND_SPEED;
-         //   handOffset = Range.clip(handOffset, -0.5, 0.5);
+            if (gamepad2.x)
+            {
+//                handOffset = handOffset +robot.HAND_SPEED;
+                handOffset = 0.5;
+                telemetry.addData("gamepad2.x", handOffset);
+                Log.v(Tag, "Hand Position " + handOffset);
+            }
+            else if (gamepad2.b) {
+//                handOffset = handOffset -robot.HAND_SPEED;
+                handOffset = 1;
+                telemetry.addData("gamepad2.x", handOffset);
+                Log.v(Tag, "Hand Position " + handOffset);
+            }
+//            handOffset = Range.clip(handOffset, -0.5, 0.5);
+
 
             // Move both servos to new position.  Use RobotHardware class
-        //    robot.setHandPositions(handOffset);
+           robot.setHandPositions(handOffset);
 
             // Use gamepad buttons to move arm up (Y) and down (A)
             // Use the MOTOR constants defined in RobotHardware class.
@@ -127,7 +142,7 @@ public class RobotTechEmpireTeleop extends LinearOpMode {
             telemetry.addData("Drive", "Left Stick");
             telemetry.addData("Turn", "Right Stick");
             telemetry.addData("Arm Up/Down", "Y & A Buttons");
-       //     telemetry.addData("Hand Open/Closed", "Left and Right Bumpers");
+            telemetry.addData("Hand Open/Closed", "X & B Buttons");
             telemetry.addData("-", "-------");
 
             telemetry.addData("Drive Power", "%.2f", drive);

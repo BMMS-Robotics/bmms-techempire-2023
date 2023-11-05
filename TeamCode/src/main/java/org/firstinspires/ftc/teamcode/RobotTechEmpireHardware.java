@@ -29,6 +29,8 @@
 
 package org.firstinspires.ftc.teamcode;
 
+import android.util.Log;
+
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -39,7 +41,7 @@ import com.qualcomm.robotcore.util.Range;
  * Please read the explanations in that Sample about how to use this class definition.
  *
  * This file defines a Java Class that performs all the setup and configuration for a sample robot's hardware (motors and sensors).
- * It assumes three motors (left_drive, right_drive and arm) and two servos (left_hand and right_hand)
+ * It assumes three motors (left_drive, right_drive and arm) and two servos (hand and right_hand)
  *
  * This one file/class can be used by ALL of your OpModes without having to cut & paste the code each time.
  *
@@ -62,13 +64,16 @@ public class RobotTechEmpireHardware {
     protected DcMotor leftDrive   = null;
     protected DcMotor rightDrive  = null;
     protected DcMotor armMotor = null;
-  // protected Servo   left_Hand = null;
+    protected Servo hand = null;
 
     // Define Drive constants.  Make them public so they CAN be used by the calling OpMode
     public static final double MID_SERVO       =  0.5 ;
-    //public static final double HAND_SPEED      =  0.02 ;  // sets rate to move servo
-    public static final double ARM_UP_POWER    =  0.05 ;
-    public static final double ARM_DOWN_POWER  = -0.05 ;
+    public static final double HAND_SERVO =  1 ;
+    public static final double HAND_SPEED      =  0.02 ;  // sets rate to move servo
+    public static final double ARM_UP_POWER    =  0.1 ;
+    public static final double ARM_DOWN_POWER  = -0.1 ;
+
+    String Tag = "RobotTechEmpireHardware";
 
     // Define a constructor that allows the OpMode to pass a reference to itself.
     public RobotTechEmpireHardware(LinearOpMode opmode) {
@@ -101,10 +106,12 @@ public class RobotTechEmpireHardware {
          armMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         // Define and initialize ALL installed servos.
-       // left_Hand = myOpMode.hardwareMap.get(Servo.class, "left_Hand");
-//        rightHand = myOpMode.hardwareMap.get(Servo.class, "right_hand");
-        //left_Hand.setPosition(MID_SERVO);
-//        rightHand.setPosition(MID_SERVO);
+        hand = myOpMode.hardwareMap.get(Servo.class, "hand");
+
+
+        hand.setPosition(HAND_SERVO);
+        Log.v(Tag, "Hand Position " + HAND_SERVO);
+
 
         myOpMode.telemetry.addData(">", "Hardware Initialized");
         myOpMode.telemetry.update();
@@ -162,8 +169,7 @@ public class RobotTechEmpireHardware {
      * @param offset
      */
     public void setHandPositions(double offset) {
-        offset = Range.clip(offset, -0.5, 0.5);
-     //   left_Hand.setPosition(MID_SERVO + offset);
-//        rightHand.setPosition(MID_SERVO - offset);
+//        offset = Range.clip(offset, -0.5, 0.5);
+        hand.setPosition(HAND_SERVO + offset);
     }
 }

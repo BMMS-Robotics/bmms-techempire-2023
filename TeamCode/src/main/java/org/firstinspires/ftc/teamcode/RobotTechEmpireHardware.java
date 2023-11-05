@@ -61,14 +61,14 @@ public class RobotTechEmpireHardware {
     // Define Motor and Servo objects  (Make them private so they can't be accessed externally)
     protected DcMotor leftDrive   = null;
     protected DcMotor rightDrive  = null;
-//    protected DcMotor armMotor = null;
-//    protected Servo   rightHand = null;
+    protected DcMotor armMotor = null;
+  // protected Servo   left_Hand = null;
 
     // Define Drive constants.  Make them public so they CAN be used by the calling OpMode
     public static final double MID_SERVO       =  0.5 ;
-    public static final double HAND_SPEED      =  0.02 ;  // sets rate to move servo
-    public static final double ARM_UP_POWER    =  0.45 ;
-    public static final double ARM_DOWN_POWER  = -0.45 ;
+    //public static final double HAND_SPEED      =  0.02 ;  // sets rate to move servo
+    public static final double ARM_UP_POWER    =  0.05 ;
+    public static final double ARM_DOWN_POWER  = -0.05 ;
 
     // Define a constructor that allows the OpMode to pass a reference to itself.
     public RobotTechEmpireHardware(LinearOpMode opmode) {
@@ -85,22 +85,25 @@ public class RobotTechEmpireHardware {
         // Define and Initialize Motors (note: need to use reference to actual OpMode).
         leftDrive  = myOpMode.hardwareMap.get(DcMotor.class, "leftDrive");
         rightDrive = myOpMode.hardwareMap.get(DcMotor.class, "rightDrive");
-//        armMotor   = myOpMode.hardwareMap.get(DcMotor.class, "arm");
+        armMotor   = myOpMode.hardwareMap.get(DcMotor.class, "armMotor");
+
 
         // To drive forward, most robots need the motor on one side to be reversed, because the axles point in opposite directions.
         // Pushing the left stick forward MUST make robot go forward. So adjust these two lines based on your first test drive.
         // Note: The settings here assume direct drive on left and right wheels.  Gear Reduction or 90 Deg drives may require direction flips
         leftDrive.setDirection(DcMotor.Direction.REVERSE);
         rightDrive.setDirection(DcMotor.Direction.FORWARD);
+        armMotor.setDirection(DcMotor.Direction.FORWARD);
 
         // If there are encoders connected, switch to RUN_USING_ENCODER mode for greater accuracy
-        // leftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        // rightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+         leftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+         rightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+         armMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         // Define and initialize ALL installed servos.
-        //leftHand = myOpMode.hardwareMap.get(Servo.class, "left_hand");
+       // left_Hand = myOpMode.hardwareMap.get(Servo.class, "left_Hand");
 //        rightHand = myOpMode.hardwareMap.get(Servo.class, "right_hand");
-        //leftHand.setPosition(MID_SERVO);
+        //left_Hand.setPosition(MID_SERVO);
 //        rightHand.setPosition(MID_SERVO);
 
         myOpMode.telemetry.addData(">", "Hardware Initialized");
@@ -146,11 +149,11 @@ public class RobotTechEmpireHardware {
 
     /**
      * Pass the requested arm power to the appropriate hardware drive motor
-     *
-     * @param power driving power (-1.0 to 1.0)
+     * @param armDrive      Fwd/Rev driving power (1.0
+     * @param power driving power (-1.0 to 1.0)+ve is forward
      */
-    public void setArmPower(double power) {
-//        armMotor.setPower(power);
+    public void setArmPower(double armDrive) {
+        armMotor.setPower(armDrive);
     }
 
     /**
@@ -160,7 +163,7 @@ public class RobotTechEmpireHardware {
      */
     public void setHandPositions(double offset) {
         offset = Range.clip(offset, -0.5, 0.5);
-        //leftHand.setPosition(MID_SERVO + offset);
+     //   left_Hand.setPosition(MID_SERVO + offset);
 //        rightHand.setPosition(MID_SERVO - offset);
     }
 }

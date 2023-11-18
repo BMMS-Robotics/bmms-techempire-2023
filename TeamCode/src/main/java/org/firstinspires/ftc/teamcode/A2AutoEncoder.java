@@ -45,21 +45,6 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  *
  *  This code ALSO requires that the drive Motors have been configured such that a positive
  *  power command moves them forward, and causes the encoders to count UP.
- *
- *   The desired path in this example is:
- *   - Drive forward for 48 inches
- *   - Spin right for 12 Inches
- *   - Drive Backward for 24 inches
- *   - Stop and close the claw.
- *
- *  The code is written using a method called: encoderDrive(speed, leftInches, rightInches, timeoutS)
- *  that performs the actual movement.
- *  This method assumes that each movement is relative to the last stopping place.
- *  There are other ways to perform encoder based moves, but this method is probably the simplest.
- *  This code uses the RUN_TO_POSITION mode to enable the Motor controllers to generate the run profile
- *
- * Use Android Studio to Copy this Class, and Paste it into your team's code folder with a new name.
- * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list
  */
 
 @Autonomous(name="Robot: A2AutoEncoder", group="Robot")
@@ -129,12 +114,14 @@ public class A2AutoEncoder extends LinearOpMode {
         sleep(1000);
         encoderDrive(DRIVE_SPEED,  31,  31, 3.0);  // S1: Forward 15 Inches with 2 Sec timeout
        encoderDrive(TURN_SPEED,   -13, 13, 3.5);  // S2: Turn Right 18 Inches with 4 Sec timeout
-        encoderDrive(DRIVE_SPEED, 57, 57, 4.5);  //  S3: Reverse 15 Inches with 4 Sec timeout
+        encoderDrive(DRIVE_SPEED, 57, 60, 4.5);  //  S3: Reverse 15 Inches with 4 Sec timeout
         robot.setArmPower(-0.2);
+
         robot.hand.setPosition(1);
-        encoderDrive(TURN_SPEED,13,-26,3.0);
+
+        encoderDrive(TURN_SPEED,14,-14,3.0);
         sleep(1000);
-        encoderDrive(DRIVE_SPEED,-31,-31,4.0);
+        encoderDrive(DRIVE_SPEED,-29,-29,4.0);
         telemetry.addData("Path", "Complete");
         telemetry.update();
         sleep(1000);  // pause to display final telemetry message.

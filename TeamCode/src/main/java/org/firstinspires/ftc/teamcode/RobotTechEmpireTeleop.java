@@ -95,11 +95,31 @@ public class RobotTechEmpireTeleop extends LinearOpMode {
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
 
+            //Read the values of the gamepad analog triggers to control speed:
+
+            if(gamepad1.left_trigger > 0) {
+                // Increase speed up to 100%
+                robot.speed += gamepad1.left_trigger;
+            }
+            else if(gamepad1.right_trigger > 0) {
+                // Decrease speed down to 20%
+                robot.speed -= gamepad1.right_trigger;
+            }
+
+            // Constrain speed value
+            robot.speed = Range.clip(robot.speed, 0.2, 1.0);
+
+
             // Run wheels in POV mode (note: The joystick goes negative when pushed forward, so negate it)
             // In this mode the Left stick moves the robot fwd and back, the Right stick turns left and right.
             // This way it's also easy to just drive straight, or just turn.
-            drive = -gamepad1.left_stick_y;
-            turn  =  gamepad1.right_stick_x;
+            // Scale the drive stick input by the speed:
+
+            drive = -gamepad1.left_stick_y * robot.speed;
+            turn  =  gamepad1.right_stick_x * robot.speed;
+
+
+            Log.v(Tag, "drive value =  " + drive);
 
             // Combine drive and turn for blended motion. Use RobotHardware class
             robot.driveRobot(drive, turn);

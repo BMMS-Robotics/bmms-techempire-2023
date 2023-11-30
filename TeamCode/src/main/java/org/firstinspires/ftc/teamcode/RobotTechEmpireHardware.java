@@ -65,6 +65,7 @@ public class RobotTechEmpireHardware {
     protected DcMotor rightDrive  = null;
     protected DcMotor armMotor = null;
     protected Servo hand = null;
+    double speed = 0.5; // 50% speed
 
     // Define Drive constants.  Make them public so they CAN be used by the calling OpMode
     public static final double MID_SERVO       =  0.5 ;

@@ -84,6 +84,8 @@ public class RobotTechEmpireTeleop extends LinearOpMode {
         double turn         = 0;
         double arm          = 0;
         double handOffset   = 0;
+        double righthandOffset= 0;
+
 
         // initialize all the hardware, using the hardware class. See how clean and simple this is?
         robot.init();
@@ -95,31 +97,11 @@ public class RobotTechEmpireTeleop extends LinearOpMode {
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
 
-            //Read the values of the gamepad analog triggers to control speed:
-
-            if(gamepad1.left_trigger > 0) {
-                // Increase speed up to 100%
-                robot.speed += gamepad1.left_trigger;
-            }
-            else if(gamepad1.right_trigger > 0) {
-                // Decrease speed down to 20%
-                robot.speed -= gamepad1.right_trigger;
-            }
-
-            // Constrain speed value
-            robot.speed = Range.clip(robot.speed, 0.2, 1.0);
-
-
             // Run wheels in POV mode (note: The joystick goes negative when pushed forward, so negate it)
             // In this mode the Left stick moves the robot fwd and back, the Right stick turns left and right.
             // This way it's also easy to just drive straight, or just turn.
-            // Scale the drive stick input by the speed:
-
-            drive = -gamepad1.left_stick_y * robot.speed;
-            turn  =  gamepad1.right_stick_x * robot.speed;
-
-
-            Log.v(Tag, "drive value =  " + drive);
+            drive = -gamepad1.left_stick_y;
+            turn  =  gamepad1.right_stick_x;
 
             // Combine drive and turn for blended motion. Use RobotHardware class
             robot.driveRobot(drive, turn);
@@ -128,24 +110,41 @@ public class RobotTechEmpireTeleop extends LinearOpMode {
             // Use the SERVO constants defined in RobotHardware class.
             // Each time around the loop, the servos will move by a small amount.
             // Limit the total offset to half of the full travel range
-            if (gamepad2.x)
+            if (gamepad2.dpad_right)
             {
 //                handOffset = handOffset +robot.HAND_SPEED;
-                handOffset = 0.5;
-                telemetry.addData("gamepad2.x", handOffset);
+                handOffset = -0.5;
+                telemetry.addData("gamepad2.dpad_right", handOffset);
                 Log.v(Tag, "Hand Position " + handOffset);
             }
-            else if (gamepad2.b) {
+            else if (gamepad2.dpad_left) {
 //                handOffset = handOffset -robot.HAND_SPEED;
                 handOffset = 1;
-                telemetry.addData("gamepad2.x", handOffset);
+                telemetry.addData("gamepad2.dpad_left", handOffset);
                 Log.v(Tag, "Hand Position " + handOffset);
             }
 //            handOffset = Range.clip(handOffset, -0.5, 0.5);
 
 
-            // Move both servos to new position.  Use RobotHardware class
            robot.setHandPositions(handOffset);
+            if (gamepad2.x)
+            {
+//                handOffset = handOffset +robot.HAND_SPEED;
+                righthandOffset = 1;
+                telemetry.addData("gamepad2.x", righthandOffset);
+                Log.v(Tag, "Right Hand Position " + righthandOffset);
+            }
+            else if (gamepad2.b) {
+//                handOffset = handOffset -robot.HAND_SPEED;
+                righthandOffset = -1;
+                telemetry.addData("gamepad2.b", righthandOffset);
+                Log.v(Tag, "Right Hand Position " + righthandOffset);
+            }
+//            handOffset = Range.clip(handOffset, -0.5, 0.5);
+
+
+            // Move both servos to new position.  Use RobotHardware class
+            robot.setRightHandPositions(righthandOffset);
 
             // Use gamepad buttons to move arm up (Y) and down (A)
             // Use the MOTOR constants defined in RobotHardware class.
@@ -154,7 +153,7 @@ public class RobotTechEmpireTeleop extends LinearOpMode {
             else if (gamepad2.a)
                 arm = robot.ARM_DOWN_POWER;
             else
-                arm = 0;
+                arm = 0.001;
 
             robot.setArmPower(arm);
 

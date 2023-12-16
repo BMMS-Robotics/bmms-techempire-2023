@@ -115,7 +115,7 @@ public class A2AutoEncoder extends LinearOpMode {
           ^ thats your example. use it wisely.
           The right hand needs to be at 1 to close and 0 to open.
           The left hand needs to be at 0 to close and 1 to open.
-          The arm goes backwards with negative power and forwards with positive power. always keep it to a decimal power.
+          The arm goes backwards withad negative power and forwards with positive power. always keep it to a decimal power.
          */
         robot.hand.setPosition(0);
         robot.right_hand.setPosition(0.5);
@@ -127,12 +127,16 @@ public class A2AutoEncoder extends LinearOpMode {
         robot.setArmPower(-0.5);
        sleep(10);
         robot.setArmPower(0.001);
-        robot.hand.setPosition(0);
-        encoderDrive(TURN_SPEED,   -60, 60, 3.0);  // S2: Turn Right 18 Inches with 4 Sec timeout
+        robot.hand.setPosition(1);
+        encoderDrive(TURN_SPEED,   -42, 42, 3.0);  // S2: Turn Right 18 Inches with 4 Sec timeout
         robot.right_hand.setPosition(0);
-        encoderDrive(DRIVE_SPEED, -100, -105, 4.5);  //  S3: Reverse 15 Inches with 4 Sec timeout
-        encoderDrive(TURN_SPEED,29,-29,2.0);
-       encoderDrive(DRIVE_SPEED,29,29,3.0);
+        //sleep(1000);
+        //robot.setArmPower(0.016);
+        //robot.hand.setPosition(1.0);
+        encoderDrive(DRIVE_SPEED, -160, -160,7.0);  //  S3: Reverse 15 Inches with 4 Sec timeout
+       // robot.setArmPower(-0.4);
+        encoderDrive(TURN_SPEED,-29,29,2.0);
+      // encoderDrive(DRIVE_SPEED,29,29,3.0);
         telemetry.addData("Path", "Complete");
         telemetry.update();
         sleep(1000);  // pause to display final telemetry message.

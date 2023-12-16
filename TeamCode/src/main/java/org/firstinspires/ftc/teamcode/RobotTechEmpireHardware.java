@@ -99,11 +99,11 @@ public class RobotTechEmpireHardware {
 
     // Define Drive constants.  Make them public so they CAN be used by the calling OpMode
     public static final double MID_SERVO       =  0.5 ;
-    public static final double HAND_SERVO =  1 ;
+    public static final double HAND_SERVO =  0.75 ;
     public static final double RIGHT_HAND_SERVO =  1 ;
     public static final double HAND_SPEED      =  0.02 ;  // sets rate to move servo
-    public static final double ARM_UP_POWER    =  0.1 ;
-    public static final double ARM_DOWN_POWER  = -0.1 ;
+    public static final double ARM_UP_POWER    =  0.3 ;
+    public static final double ARM_DOWN_POWER  = -0.2 ;
 
     String Tag = "RobotTechEmpireHardware";
 

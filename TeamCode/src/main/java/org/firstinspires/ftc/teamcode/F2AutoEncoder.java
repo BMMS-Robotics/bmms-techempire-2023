@@ -38,12 +38,12 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 /*
  * This OpMode illustrates the concept of driving a path based on encoder counts.
  * The code is structured as a LinearOpMode
+ *
  * The code REQUIRES that you DO have encoders on the wheels,
  *   otherwise you would use: RobotAutoDriveByTime;
+ *
  *  This code ALSO requires that the drive Motors have been configured such that a positive
  *  power command moves them forward, and causes the encoders to count UP.
- *  This code uses the RUN_TO_POSITION mode to enable the Motor controllers to generate the run profile
- * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list
  */
 
 @Autonomous(name="Robot: F2AutoEncoder", group="Robot")
@@ -105,18 +105,20 @@ public class F2AutoEncoder extends LinearOpMode {
 
         // Step through each leg of the path,
         // Note: Reverse movement is obtained by setting a negative distance (not speed)
+        sleep(16000);
+        robot.setDrivePower(0.001,0.001);
         robot.hand.setPosition(-0.3);
-        robot.setArmPower(0.5);
+        encoderDrive(DRIVE_SPEED,  21,  20, 4.0);  // S1: Forward 15 Inches with 2 Sec timeout
+        robot.setArmPower(0.45);
         sleep(1000);
         robot.setArmPower(0.001);
         robot.setArmPower(-0.16);
         sleep(1000);
-        encoderDrive(DRIVE_SPEED,  31,  31, 3.0);  // S1: Forward 15 Inches with 2 Sec timeout
-       encoderDrive(TURN_SPEED,   13, -13, 3.5);  // S2: Turn Right 18 Inches with 4 Sec timeout
-        encoderDrive(DRIVE_SPEED, 57, 58, 4.5);  //  S3: Reverse 15 Inches with 4 Sec timeout
+       encoderDrive(TURN_SPEED,   29, -29, 4.0);  // S2: Turn Right 18 Inches with 4 Sec timeout
+        encoderDrive(DRIVE_SPEED, 100, 100, 4.5);  //  S3: Reverse 15 Inches with 4 Sec timeout
         robot.setArmPower(-0.2);
         robot.hand.setPosition(1);
-        encoderDrive(TURN_SPEED,-14,14,3.0);
+        encoderDrive(TURN_SPEED,-31,31,3.0);
         sleep(1000);
         encoderDrive(DRIVE_SPEED,-29,-29,4.0);
         telemetry.addData("Path", "Complete");

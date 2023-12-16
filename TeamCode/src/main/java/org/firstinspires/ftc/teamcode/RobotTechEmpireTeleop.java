@@ -100,7 +100,7 @@ public class RobotTechEmpireTeleop extends LinearOpMode {
             // Run wheels in POV mode (note: The joystick goes negative when pushed forward, so negate it)
             // In this mode the Left stick moves the robot fwd and back, the Right stick turns left and right.
             // This way it's also easy to just drive straight, or just turn.
-            drive = -gamepad1.left_stick_y;
+            drive = gamepad1.left_stick_y;
             turn  =  gamepad1.right_stick_x;
 
             // Combine drive and turn for blended motion. Use RobotHardware class
@@ -113,7 +113,7 @@ public class RobotTechEmpireTeleop extends LinearOpMode {
             if (gamepad2.dpad_right)
             {
 //                handOffset = handOffset +robot.HAND_SPEED;
-                handOffset = -0.5;
+                handOffset = -1;
                 telemetry.addData("gamepad2.dpad_right", handOffset);
                 Log.v(Tag, "Hand Position " + handOffset);
             }
@@ -130,13 +130,13 @@ public class RobotTechEmpireTeleop extends LinearOpMode {
             if (gamepad2.x)
             {
 //                handOffset = handOffset +robot.HAND_SPEED;
-                righthandOffset = 1;
+                righthandOffset = 2;
                 telemetry.addData("gamepad2.x", righthandOffset);
                 Log.v(Tag, "Right Hand Position " + righthandOffset);
             }
             else if (gamepad2.b) {
 //                handOffset = handOffset -robot.HAND_SPEED;
-                righthandOffset = -1;
+                righthandOffset = -10 ;
                 telemetry.addData("gamepad2.b", righthandOffset);
                 Log.v(Tag, "Right Hand Position " + righthandOffset);
             }
@@ -149,9 +149,9 @@ public class RobotTechEmpireTeleop extends LinearOpMode {
             // Use gamepad buttons to move arm up (Y) and down (A)
             // Use the MOTOR constants defined in RobotHardware class.
             if (gamepad2.y)
-                arm = robot.ARM_UP_POWER;
-            else if (gamepad2.a)
                 arm = robot.ARM_DOWN_POWER;
+            else if (gamepad2.a)
+                arm = robot.ARM_UP_POWER;
             else
                 arm = 0.001;
 

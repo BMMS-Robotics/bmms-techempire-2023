@@ -71,8 +71,8 @@ public class A2AutoEncoder extends LinearOpMode {
     static final double     COUNTS_PER_INCH         = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
                                                       (WHEEL_DIAMETER_INCHES * 3.1415);
     static final double     COUNTS_PER_DEGREE       = 1440/360;
-    static final double     DRIVE_SPEED             = 0.6;
-    static final double     TURN_SPEED              = 0.4;
+    static final double     DRIVE_SPEED             = 0.4;
+    static final double     TURN_SPEED              = 0.6;
 
     @Override
     public void runOpMode() {
@@ -82,6 +82,7 @@ public class A2AutoEncoder extends LinearOpMode {
         robot.rightDrive = hardwareMap.get(DcMotor.class, "rightDrive");
         robot.armMotor  =  hardwareMap.get(DcMotor.class,"armMotor");
         robot.hand  =   hardwareMap.get(Servo.class,"hand");
+        robot.right_hand = hardwareMap.get(Servo.class, "right_hand");
 
         // To drive forward, most robots need the motor on one side to be reversed, because the axles point in opposite directions.
         // When run, this OpMode should start both motors driving forward. So adjust these two lines based on your first test drive.
@@ -106,22 +107,32 @@ public class A2AutoEncoder extends LinearOpMode {
 
         // Step through each leg of the path,
         // Note: Reverse movement is obtained by setting a negative distance (not speed)
-        robot.hand.setPosition(-0.3);
+        /*TO AASHI AND EILEEN FOR WHEN I'M GONE
+        To add a pause between movements, add a sleep and a line setting the power to 0.
+        encoderDrive(DRIVE_SPEED,<leftinches>4, <rightinches>4, <timeouts>30);
+        sleep(<milliseconds>20)
+        encoderDrive(DRIVE_SPEED,<leftinches>0, <rightinches>0, <timeouts>0);
+          ^ thats your example. use it wisely.
+          The right hand needs to be at 1 to close and 0 to open.
+          The left hand needs to be at 0 to close and 1 to open.
+          The arm goes backwards with negative power and forwards with positive power. always keep it to a decimal power.
+         */
+        robot.hand.setPosition(0);
+        robot.right_hand.setPosition(0.5);
+        encoderDrive(DRIVE_SPEED, -4,  -4, 4.0);  // S1: Forward 15 Inches with 2 Sec timeout
         robot.setArmPower(0.5);
-        sleep(1000);
+        encoderDrive(DRIVE_SPEED, -18,  -18, 4.0);  // S1: Forward 15 Inches with 2 Sec timeout
+        sleep(20);
+        encoderDrive(DRIVE_SPEED,0,0,0);
+        robot.setArmPower(-0.5);
+       sleep(10);
         robot.setArmPower(0.001);
-        robot.setArmPower(-0.16);
-        sleep(1000);
-        encoderDrive(DRIVE_SPEED,  31,  31, 3.0);  // S1: Forward 15 Inches with 2 Sec timeout
-       encoderDrive(TURN_SPEED,   -13, 13, 3.5);  // S2: Turn Right 18 Inches with 4 Sec timeout
-        encoderDrive(DRIVE_SPEED, 57, 60, 4.5);  //  S3: Reverse 15 Inches with 4 Sec timeout
-        robot.setArmPower(-0.2);
-
-        robot.hand.setPosition(1);
-
-        encoderDrive(TURN_SPEED,14,-14,3.0);
-        sleep(1000);
-        encoderDrive(DRIVE_SPEED,-29,-29,4.0);
+        robot.hand.setPosition(0);
+        encoderDrive(TURN_SPEED,   -60, 60, 3.0);  // S2: Turn Right 18 Inches with 4 Sec timeout
+        robot.right_hand.setPosition(0);
+        encoderDrive(DRIVE_SPEED, -100, -105, 4.5);  //  S3: Reverse 15 Inches with 4 Sec timeout
+        encoderDrive(TURN_SPEED,29,-29,2.0);
+       encoderDrive(DRIVE_SPEED,29,29,3.0);
         telemetry.addData("Path", "Complete");
         telemetry.update();
         sleep(1000);  // pause to display final telemetry message.

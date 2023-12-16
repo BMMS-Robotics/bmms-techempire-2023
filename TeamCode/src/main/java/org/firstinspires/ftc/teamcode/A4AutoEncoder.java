@@ -85,7 +85,7 @@ public class A4AutoEncoder extends LinearOpMode {
     static final double     COUNTS_PER_INCH         = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
                                                       (WHEEL_DIAMETER_INCHES * 3.1415);
     static final double     COUNTS_PER_DEGREE       = 1440/360;
-    static final double     DRIVE_SPEED             = 0.6;
+    static final double     DRIVE_SPEED             = 1;
     static final double     TURN_SPEED              = 0.4;
 
     @Override
@@ -114,26 +114,27 @@ public class A4AutoEncoder extends LinearOpMode {
                           robot.leftDrive.getCurrentPosition(),
                           robot.rightDrive.getCurrentPosition());
         telemetry.update();
-
-       // Wait for the game to start (driver presses PLAY)
+        // Wait for the game to start (driver presses PLAY)
         waitForStart();
 
         // Step through each leg of the path,
         // Note: Reverse movement is obtained by setting a negative distance (not speed)
+
         robot.hand.setPosition(-0.3);
+        //encoderDrive(DRIVE_SPEED,  20,  20,    3.5) robot.setArmPower-0.6;
+        //() 3.0);  // S1: Forward 15 Inches with 2 Sec timeout
         robot.setArmPower(0.5);
         sleep(1000);
         robot.setArmPower(0.001);
         robot.setArmPower(-0.16);
         sleep(1000);
-        encoderDrive(DRIVE_SPEED,  25,  25, 3.0);  // S1: Forward 15 Inches with 2 Sec timeout
-       encoderDrive(TURN_SPEED,   -14, 14, 3.5);  // S2: Turn Right 18 Inches with 4 Sec timeout
-        encoderDrive(DRIVE_SPEED, 10, 10, 4.5);  //  S3: Reverse 15 Inches with 4 Sec timeout
-        robot.setArmPower(-0.2);
+       encoderDrive(TURN_SPEED,   -29, 29, 3.5);  // S2: Turn Right 18 Inches with 4 Sec timeout
+        encoderDrive(DRIVE_SPEED, 26, 26, 4.5);  //  S3: Reverse 15 Inches with 4 Sec timeout
+        robot.setArmPower(-0.5);
         robot.hand.setPosition(1);
-        encoderDrive(TURN_SPEED,12,-12,3.0);
+        encoderDrive(TURN_SPEED,20,-20,3.0);
         sleep(1000);
-        encoderDrive(DRIVE_SPEED,-29,-29,4.0);
+        encoderDrive(DRIVE_SPEED,-30,-30,4.0);
         telemetry.addData("Path", "Complete");
         telemetry.update();
         sleep(1000);  // pause to display final telemetry message.

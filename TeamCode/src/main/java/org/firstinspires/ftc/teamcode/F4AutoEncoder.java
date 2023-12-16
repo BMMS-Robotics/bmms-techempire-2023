@@ -38,9 +38,26 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 /*
  * This OpMode illustrates the concept of driving a path based on encoder counts.
  * The code is structured as a LinearOpMode
+ *
  * The code REQUIRES that you DO have encoders on the wheels,
  *   otherwise you would use: RobotAutoDriveByTime;
+ *
+ *  This code ALSO requires that the drive Motors have been configured such that a positive
+ *  power command moves them forward, and causes the encoders to count UP.
+ *
+ *   The desired path in this example is:
+ *   - Drive forward for 48 inches
+ *   - Spin right for 12 Inches
+ *   - Drive Backward for 24 inches
+ *   - Stop and close the claw.
+ *
+ *  The code is written using a method called: encoderDrive(speed, leftInches, rightInches, timeoutS)
+ *  that performs the actual movement.
+ *  This method assumes that each movement is relative to the last stopping place.
+ *  There are other ways to perform encoder based moves, but this method is probably the simplest.
  *  This code uses the RUN_TO_POSITION mode to enable the Motor controllers to generate the run profile
+ *
+ * Use Android Studio to Copy this Class, and Paste it into your team's code folder with a new name.
  * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list
  */
 
@@ -68,7 +85,7 @@ public class F4AutoEncoder extends LinearOpMode {
     static final double     COUNTS_PER_INCH         = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
                                                       (WHEEL_DIAMETER_INCHES * 3.1415);
     static final double     COUNTS_PER_DEGREE       = 1440/360;
-    static final double     DRIVE_SPEED             = 0.6;
+    static final double     DRIVE_SPEED             = 1;
     static final double     TURN_SPEED              = 0.4;
 
     @Override
@@ -97,26 +114,28 @@ public class F4AutoEncoder extends LinearOpMode {
                           robot.leftDrive.getCurrentPosition(),
                           robot.rightDrive.getCurrentPosition());
         telemetry.update();
-
-       // Wait for the game to start (driver presses PLAY)
+        // Wait for the game to start (driver presses PLAY)
         waitForStart();
 
         // Step through each leg of the path,
         // Note: Reverse movement is obtained by setting a negative distance (not speed)
+
         robot.hand.setPosition(-0.3);
+        encoderDrive(DRIVE_SPEED,  20,  20, 3.0);  // S1: Forward 15 Inches with 2 Sec timeout
         robot.setArmPower(0.5);
         sleep(1000);
         robot.setArmPower(0.001);
         robot.setArmPower(-0.16);
         sleep(1000);
-        encoderDrive(DRIVE_SPEED,  28,  28, 3.0);  // S1: Forward 15 Inches with 2 Sec timeout
-       encoderDrive(TURN_SPEED,   13, -13, 3.5);  // S2: Turn Right 18 Inches with 4 Sec timeout
-        encoderDrive(DRIVE_SPEED, 10, 10, 4.5);  //  S3: Reverse 15 Inches with 4 Sec timeout
-        robot.setArmPower(-0.2);
+       encoderDrive(TURN_SPEED,   31, -31, 3.5);  // S2: Turn Right 18 Inches with 4 Sec timeout
+        encoderDrive(DRIVE_SPEED, 31, 31, 4.5);  //  S3: Reverse 15 Inches with 4 Sec timeout
+        robot.setArmPower(-0.6);
         robot.hand.setPosition(1);
-        encoderDrive(TURN_SPEED,-14,14,3.0);
+        encoderDrive(TURN_SPEED,-15,15,3.0);
         sleep(1000);
-        encoderDrive(DRIVE_SPEED,-29,-29,4.0);
+        encoderDrive(DRIVE_SPEED,-30,-30,4.0);
+        encoderDrive(TURN_SPEED,18,-18,4.0);
+        encoderDrive(DRIVE_SPEED,5,5,4.0);
         telemetry.addData("Path", "Complete");
         telemetry.update();
         sleep(1000);  // pause to display final telemetry message.
@@ -220,3 +239,4 @@ public class F4AutoEncoder extends LinearOpMode {
         }
     }
 }
+//[;-)]

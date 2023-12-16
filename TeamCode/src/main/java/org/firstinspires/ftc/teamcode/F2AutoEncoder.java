@@ -26,12 +26,12 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -67,8 +67,7 @@ public class F2AutoEncoder extends LinearOpMode {
     static final double     COUNTS_PER_MOTOR_REV    = 1440 ;    // eg: TETRIX Motor Encoder
     static final double     DRIVE_GEAR_REDUCTION    = 1.0 ;     // No External Gearing.
     static final double     WHEEL_DIAMETER_INCHES   = 4.0 ;     // For figuring circumference
-    static final double     COUNTS_PER_INCH         = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
-                                                      (WHEEL_DIAMETER_INCHES * 3.1415);
+    static final double     COUNTS_PER_INCH         = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) / (WHEEL_DIAMETER_INCHES * 3.1415);
     static final double     COUNTS_PER_DEGREE       = 1440/360;
     static final double     DRIVE_SPEED             = 0.6;
     static final double     TURN_SPEED              = 0.4;
@@ -81,12 +80,13 @@ public class F2AutoEncoder extends LinearOpMode {
         robot.rightDrive = hardwareMap.get(DcMotor.class, "rightDrive");
         robot.armMotor  =  hardwareMap.get(DcMotor.class,"armMotor");
         robot.hand  =   hardwareMap.get(Servo.class,"hand");
+        robot.right_hand  =  hardwareMap.get(Servo.class,"right_hand");
 
         // To drive forward, most robots need the motor on one side to be reversed, because the axles point in opposite directions.
         // When run, this OpMode should start both motors driving forward. So adjust these two lines based on your first test drive.
         // Note: The settings here assume direct drive on left and right wheels.  Gear Reduction or 90 Deg drives may require direction flips
-        robot.leftDrive.setDirection(DcMotor.Direction.REVERSE);
-        robot.rightDrive.setDirection(DcMotor.Direction.FORWARD);
+        robot.leftDrive.setDirection(DcMotor.Direction.FORWARD);
+        robot.rightDrive.setDirection(DcMotor.Direction.REVERSE);
 
         robot.leftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robot.rightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -96,31 +96,41 @@ public class F2AutoEncoder extends LinearOpMode {
 
         // Send telemetry message to indicate successful Encoder reset
         telemetry.addData("Starting at",  "%7d :%7d",
-                          robot.leftDrive.getCurrentPosition(),
-                          robot.rightDrive.getCurrentPosition());
+                robot.leftDrive.getCurrentPosition(),
+                robot.rightDrive.getCurrentPosition());
         telemetry.update();
 
-       // Wait for the game to start (driver presses PLAY)
+        // Wait for the game to start (driver presses PLAY)
         waitForStart();
 
         // Step through each leg of the path,
         // Note: Reverse movement is obtained by setting a negative distance (not speed)
-        sleep(16000);
-        robot.setDrivePower(0.001,0.001);
-        robot.hand.setPosition(-0.3);
-        encoderDrive(DRIVE_SPEED,  21,  20, 4.0);  // S1: Forward 15 Inches with 2 Sec timeout
+        robot.hand.setPosition(0);
+        robot.right_hand.setPosition(1);
+
+        encoderDrive(DRIVE_SPEED,  24,  24, 4.5);  // S1: Forward 15 Inches with 2 Sec timeout
+        encoderDrive(TURN_SPEED,   -12, 12, 4.0);  // S2: Turn Right 18 Inches with 4 Sec timeout
+        encoderDrive(DRIVE_SPEED, 94, 94, 4.5);  //  S3: Reverse 15 Inches with 4 Sec timeout
         robot.setArmPower(0.45);
+        sleep(1500);
+        //robot.setArmPower(0.001);
+        robot.setArmPower(-0.25);
+        sleep(1000);
+        robot.setArmPower(-0.175);
         sleep(1000);
         robot.setArmPower(0.001);
-        robot.setArmPower(-0.16);
-        sleep(1000);
-       encoderDrive(TURN_SPEED,   29, -29, 4.0);  // S2: Turn Right 18 Inches with 4 Sec timeout
-        encoderDrive(DRIVE_SPEED, 100, 100, 4.5);  //  S3: Reverse 15 Inches with 4 Sec timeout
-        robot.setArmPower(-0.2);
         robot.hand.setPosition(1);
-        encoderDrive(TURN_SPEED,-31,31,3.0);
+        robot.right_hand.setPosition(0);
+        encoderDrive(TURN_SPEED,31,-31,3.0);
         sleep(1000);
-        encoderDrive(DRIVE_SPEED,-29,-29,4.0);
+        robot.right_hand.setPosition(1);
+        robot.hand.setPosition(0);
+
+        robot.setArmPower(-0.75);
+        //encoderDrive(DRIVE_SPEED,-2,-2,2.0);
+        encoderDrive(TURN_SPEED,-14,-14,3.0);
+        // encoderDrive(DRIVE_SPEED,-15,-15,3.0);
+        //offencoderDrive(DRIVE_SPEED,-29,-29,4.0);
         telemetry.addData("Path", "Complete");
         telemetry.update();
         sleep(1000);  // pause to display final telemetry message.
@@ -165,13 +175,13 @@ public class F2AutoEncoder extends LinearOpMode {
             // However, if you require that BOTH motors have finished their moves before the robot continues
             // onto the next step, use (isBusy() || isBusy()) in the loop test.
             while (opModeIsActive() &&
-                   (runtime.seconds() < timeoutS) &&
-                   (robot.leftDrive.isBusy() && robot.rightDrive.isBusy())) {
+                    (runtime.seconds() < timeoutS) &&
+                    (robot.leftDrive.isBusy() && robot.rightDrive.isBusy())) {
 
                 // Display it for the driver.
                 telemetry.addData("Running to",  " %7d :%7d", newLeftTarget,  newRightTarget);
                 telemetry.addData("Currently at",  " at %7d :%7d",
-                                            robot.leftDrive.getCurrentPosition(), robot.rightDrive.getCurrentPosition());
+                        robot.leftDrive.getCurrentPosition(), robot.rightDrive.getCurrentPosition());
                 telemetry.update();
             }
 

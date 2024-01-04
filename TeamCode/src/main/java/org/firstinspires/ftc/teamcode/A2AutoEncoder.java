@@ -46,6 +46,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  *  power command moves them forward, and causes the encoders to count UP.
  */
 
+//Name of code
 @Autonomous(name="Robot: A2AutoEncoder", group="Robot")
 //@Disabled
 public class A2AutoEncoder extends LinearOpMode {
@@ -55,6 +56,7 @@ public class A2AutoEncoder extends LinearOpMode {
     //private DcMotor         robot.leftDrive   = null;
     //private DcMotor         robot.rightDrive  = null;
 
+    // Elapsed and run time
     private ElapsedTime     runtime = new ElapsedTime();
 
 

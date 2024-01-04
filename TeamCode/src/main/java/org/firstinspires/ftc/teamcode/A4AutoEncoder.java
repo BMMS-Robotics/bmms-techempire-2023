@@ -103,11 +103,10 @@ public class A4AutoEncoder extends LinearOpMode {
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
 
-        // Step through each leg of the path,
+        // Code the path of the robot,
         // Note: Reverse movement is obtained by setting a negative distance (not speed)
         robot.hand.setPosition(0);
         robot.right_hand.setPosition(1);
-
         encoderDrive(DRIVE_SPEED,  24,  24, 4.5);  // S1: Forward 15 Inches with 2 Sec timeout
         encoderDrive(TURN_SPEED,   12, -12, 4.0);  // S2: Turn Right 18 Inches with 4 Sec timeout
         encoderDrive(DRIVE_SPEED, 30, 30, 4.5);  //  S3: Reverse 15 Inches with 4 Sec timeout
